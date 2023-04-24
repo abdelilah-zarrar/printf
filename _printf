@@ -1,49 +1,50 @@
-#include <stdio.h>
-#include <stdarg.h>
+#include "main.h"
 
 /**
-*_printf - A function that produces output according to a format.
-*@format: A character string containing directives.
-*Return: The number of characters printed (excluding the null byte used to end output to strings)
-*/
-
+ * _printf - A a function that produces output according to a format.
+ * @format: Is a character string.
+ * Return: The number of characters printed excluding '\0'
+ */
 int _printf(const char *format, ...)
 {
-    va_list args;
-    va_start(args, format);
-    int count = 0;
-    while (*format != '\0')
-    {
-        if (*format == '%')
-        {
-            format++;
-            switch (*format)
-            {
-                case 'c':
-                    putchar(va_arg(args, int));
-                    count++;
-                    break;
-                case 's':
-                    count += printf("%s", va_arg(args, char *));
-                    break;
-                case '%':
-                    putchar('%');
-                    count++;
-                    break;
-                default:
-                    putchar('%');
-                    putchar(*format);
-                    count += 2;
-                    break;
-            }
-        }
-        else
-        {
-            putchar(*format);
-            count++;
-        }
-        format++;
-    }
-    va_end(args);
-    return count;
+	int i;
+	int j;
+	int count;
+	char *tmp;
+	va_list arg;
+
+	i = 0;
+	j = 0;
+	count = 0;
+	if (format == NULL)
+		return (1);
+	va_start(arg, format);
+	while (format[i] != '\0')
+	{
+		if (format[i] == '%' && format[i + 1] == 'c')
+		{
+			_putchar(va_arg(arg, int));
+			i++;
+			count++;
+		}
+		else if (format[i] == '%' && format[i + 1] == 's')
+		{
+			tmp = va_arg(arg, char *);
+			while (tmp[j] != '\0')
+			{
+				_putchar(tmp[j]);
+				j++;
+				count++;
+			}
+			i++;
+		}
+		else
+		{
+			_putchar(format[i]);
+			count++;
+		}
+		i++;
+	}
+	va_end(arg);
+	return (count);
 }
