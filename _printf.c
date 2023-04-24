@@ -27,6 +27,11 @@ int _printf(const char *format, ...)
 			i++;
 			count++;
 		}
+		else if (format[i] == '%' && format[i + 1] == '%')
+		{
+			_putchar(format[i]);
+			i++;
+		}
 		else if (format[i] == '%' && format[i + 1] == 's')
 		{
 			tmp = va_arg(arg, char *);
