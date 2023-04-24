@@ -5,51 +5,74 @@
  * @format: Is a character string.
  * Return: The number of characters printed excluding '\0'
  */
+
 int _printf(const char *format, ...)
 {
-	int i;
-	int j;
-	int count;
-	char *tmp;
-	va_list arg;
+    int i = 0, count = 0;
+    char *str;
+    va_list args;
 
-	i = 0;
-	j = 0;
-	count = 0;
-	if (format == NULL)
-		return (1);
-	va_start(arg, format);
-	while (format[i] != '\0')
-	{
-		if (format[i] == '%' && format[i + 1] == 'c')
-		{
-			_putchar(va_arg(arg, int));
-			i++;
-			count++;
-		}
-		else if (format[i] == '%' && format[i + 1] == '%')
-		{
-			_putchar(format[i]);
-			i++;
-		}
-		else if (format[i] == '%' && format[i + 1] == 's')
-		{
-			tmp = va_arg(arg, char *);
-			while (tmp[j] != '\0')
-			{
-				_putchar(tmp[j]);
-				j++;
-				count++;
-			}
-			i++;
-		}
-		else
-		{
-			_putchar(format[i]);
-			count++;
-		}
-		i++;
-	}
-	va_end(arg);
-	return (count);
+    va_start(args, format);
+    while (format[i])
+    {
+        if (format[i] == '%')
+        {
+            i++;
+            switch (format[i])
+            {
+                case 's':
+                    str = va_arg(args, char *);
+                    if (!str)
+                        str = "(null)";
+                    count += print_str(str);
+                    break;
+                case 'c':
+                    count += print_char(va_arg(args, int));
+                    break;
+                case '%':
+                    count += print_char('%');
+                    break;
+                default:
+                    count += print_char('%');
+                    count += print_char(format[i]);
+                    break;
+            }
+        }
+        else
+        {
+            count += print_char(format[i]);
+        }
+        i++;
+    }
+    va_end(args);
+    return (count);
 }
+
+/**
+ * print_char - A function that prints a character to the standard output.
+ * @c: The character to be printed.
+ * Return: The number of characters printed (always 1).
+ */
+
+int print_char(char c)
+{
+    return (write(1, &c, 1));
+}
+
+/**
+ * print_str - A function that prints a string to the standard output.
+ * @str: The string to be printed.
+ * Return: The number of characters printed (excluding the null byte).
+ */
+
+int print_str(char *str)
+{
+    int i;
+
+    for (i = 0; str[i]; i++)
+    {
+        print_char(str[i]);
+    }
+    return (i);
+}
+
